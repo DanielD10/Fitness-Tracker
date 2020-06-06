@@ -71,10 +71,25 @@ app.put("/api/workouts/:id"),
       });
   };
 
-  app.get("/stats", function(req, res){
-      res.sendFile(path.join(__dirname, "./public/stats.html"))
-  });
+app.get("/stats", function (req, res) {
+  res.sendFile(path.join(__dirname, "./public/stats.html"));
+});
 
+app.get("/api/workouts/range", function (req, res) {
+    db.Workout.find({
+        day: {
+            // $gte: new Date(new Date(Sunday).setHours(00, 00, 00)),
+            $lt: new Date()
+          }
+    })
+  .sort({ day: "asc" })
+  .then((dbWorkout) => {
+    res.json(dbWorkout);
+  })
+  .catch((err) => {
+    res.json(err);
+  });
+})
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}`);
 });
